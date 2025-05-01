@@ -1,6 +1,6 @@
 # Object files
 obj/*.o
-.o
+*.o
 
 # Settings files
 .vscode/*
