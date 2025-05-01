@@ -1,40 +1,52 @@
 #ifndef CELL_H
 #define CELL_H
 
-class Cell {
-    private:
-        bool is_mine;
-        bool is_opened;
-        bool is_flagged;
-
-        int mine_count;
-        int flag_count;
-        int closed_count;
-        unsigned char x;
-        unsigned char y;
-        unsigned char mouse_state;
-
-    public:
-        Cell();
-
-        void set_mine();
-        bool is_mine();
-
-        void open();
-        bool is_opened();
-
-        void flag();
-        bool is_flagged();
-
-        void set_mine_count(int count);
-        int get_mine_count();
-
-        void set_flag_count(int count);
-        int get_flag_count();
-
-        void set_closed_count(int count);
-        int get_closed_count();
+enum OpenResult
+{
+    MINE_TRIGGERED = -1, // Cell is a mine and is triggered
+    FLAGGED,             // Cell is flagged and cannot be opened
+    ALREADY_OPENED,      // Cell is already opened, chording condition is not met
+    OPENED_NUMBER,       // Cell is opened and has mines surrounding it
+    OPENED_EMPTY,        // Cell is opened and has no mines surrounding it, need to open surrounding cells
+    AUTO_OPEN,           // Chording: open all surrounding cells
+    AUTO_FLAG,           // Chording: flag all surrounding cells
 };
 
+class Cell
+{
+private:
+    bool mine;
+    bool opened;
+    bool flagged;
+
+    int mine_count; // Number of mines around this cell
+    unsigned char x;
+    unsigned char y;
+    unsigned char mouse_state;
+
+    unsigned char effect_timer;
+
+public:
+    Cell(unsigned char x, unsigned char y);
+    void reset();
+
+    void setMine();
+    bool isMine();
+
+    int open(int flag_count, int closed_count);
+    bool isOpened();
+
+    void flag();
+    bool isFlagged();
+
+    void setMineCount(int count);
+    void increaseMineCount();
+    int getMineCount();
+
+    unsigned char getEffectTimer();
+    unsigned char getX();
+    unsigned char getY();
+
+};
 
 #endif // CELL_H
