@@ -1,6 +1,14 @@
 #ifndef GAMESETTING_H
 #define GAMESETTING_H
 
+enum Difficulty
+{
+    EASY = 0,
+    NORMAL,
+    HARD,
+    CUSTOM
+};
+
 class GameSetting
 {
 private:
@@ -34,7 +42,7 @@ public:
     void setEasyMode();
     void setNormalMode();
     void setHardMode();
-    void setCustomMode(unsigned char width, unsigned char height, unsigned char mines);
+    // void setCustomMode(unsigned char row, unsigned char column, unsigned char mines);
 };
 
 #endif // GAMESETTING_H

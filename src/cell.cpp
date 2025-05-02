@@ -62,6 +62,10 @@ bool Cell::isOpened()
     return opened;
 }
 
+/*
+ * Switch the flag state of the cell.
+ * If the cell is opened, do nothing.
+ */
 void Cell::flag()
 {
     if (opened)
@@ -89,9 +93,37 @@ int Cell::getMineCount()
     return mine_count;
 }
 
+void Cell::setEffectTimer(unsigned char timer)
+{
+    effect_timer = timer;
+}
+
 unsigned char Cell::getEffectTimer()
 {
     return effect_timer;
+}
+
+bool Cell::updateEffectTimer()
+{
+    if (effect_timer > 0)
+    {
+        effect_timer--;
+        if (effect_timer == 0)
+        {
+            return true; // Effect duration is over
+        }
+    }
+    return false; // Effect duration is not over
+}
+
+void Cell::setMouseState(unsigned char state)
+{
+    mouse_state = state;
+}
+
+unsigned char Cell::getMouseState()
+{
+    return mouse_state;
 }
 
 unsigned char Cell::getX()

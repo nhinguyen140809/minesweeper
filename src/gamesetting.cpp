@@ -1,3 +1,86 @@
 #include "gamesetting.h"
+#include "common.h"
 
+void GameSetting::setBoardRow(unsigned char i_row)
+{
+    if (i_row < MIN_ROW || i_row > MAX_ROW)
+        return;
+    board_row = i_row;
+}
 
+unsigned char GameSetting::getBoardRow()
+{
+    return board_row;
+}
+
+void GameSetting::setBoardColumn(unsigned char i_column)
+{
+    if (i_column < MIN_COLUMN || i_column > MAX_COLUMN)
+        return;
+    board_column = i_column;
+}
+
+unsigned char GameSetting::getBoardColumn()
+{
+    return board_column;
+}
+
+void GameSetting::setDifficulty(unsigned char i_difficulty)
+{
+    difficulty = i_difficulty;
+    switch (difficulty)
+    {
+    case EASY:
+        setEasyMode();
+        break;
+    case NORMAL:
+        setNormalMode();
+        break;
+    case HARD:
+        setHardMode();
+        break;
+    default:
+        break;
+    }
+}
+
+unsigned char GameSetting::getDifficulty()
+{
+    return difficulty;
+}
+
+void GameSetting::setMines(unsigned char i_mines)
+{
+    if (i_mines < MIN_MINES || i_mines > MAX_MINES)
+        return;
+    mines = i_mines;
+}
+
+unsigned char GameSetting::getMines()
+{
+    return mines;
+}
+
+void GameSetting::setEasyMode()
+{
+    board_row = 8;
+    board_column = 8;
+    mines = 16;
+    difficulty = EASY;
+}
+
+void GameSetting::setNormalMode()
+{
+    board_row = 16;
+    board_column = 16;
+    mines = 80;
+    difficulty = NORMAL;
+}
+
+void GameSetting::setHardMode()
+{
+    board_row = 22;
+    board_column = 22;
+    mines = 150;
+    difficulty = HARD;
+}

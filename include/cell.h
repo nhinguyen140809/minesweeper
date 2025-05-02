@@ -8,8 +8,8 @@ enum OpenResult
     ALREADY_OPENED,      // Cell is already opened, chording condition is not met
     OPENED_NUMBER,       // Cell is opened and has mines surrounding it
     OPENED_EMPTY,        // Cell is opened and has no mines surrounding it, need to open surrounding cells
-    AUTO_OPEN,           // Chording: open all surrounding cells
-    AUTO_FLAG,           // Chording: flag all surrounding cells
+    AUTO_OPEN,           // Chording: open all surrounding cells (current cell is already opened)
+    AUTO_FLAG,           // Chording: flag all surrounding cells (current cell is already opened)
 };
 
 class Cell
@@ -43,10 +43,15 @@ public:
     void increaseMineCount();
     int getMineCount();
 
+    void setEffectTimer(unsigned char timer);
     unsigned char getEffectTimer();
+    bool updateEffectTimer();
+
+    void setMouseState(unsigned char state);
+    unsigned char getMouseState();
+
     unsigned char getX();
     unsigned char getY();
-
 };
 
 #endif // CELL_H

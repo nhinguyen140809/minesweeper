@@ -23,14 +23,24 @@ private:
     std::random_device random_device;
     std::vector<std::vector<Cell>> cells;
 
+    int countFlagAround(unsigned char i_x, unsigned char i_y);
+    int countClosedAround(unsigned char i_x, unsigned char i_y);
+    void openCellsAround(unsigned char i_x, unsigned char i_y);
+    void flagCellsAround(unsigned char i_x, unsigned char i_y);
+
 public:
     Board();
+    ~Board();
     bool effectOver();
     char getGameOver();
+
     void draw(sf::RenderWindow &i_window);
+
     void flagCell(unsigned char i_x, unsigned char i_y);
     void openCell(unsigned char i_x, unsigned char i_y);
+
     void restart();
+
     void setMouseState(unsigned char i_mouse_state, unsigned char i_x, unsigned char i_y);
 };
 
