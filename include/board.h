@@ -34,7 +34,8 @@ public:
     bool effectOver();
     char getGameOver();
 
-    void draw(sf::RenderWindow &i_window);
+    void draw(sf::RenderWindow& window, sf::Font& font);
+    void handleInput(const sf::Event& event, sf::RenderWindow& window);
 
     void flagCell(unsigned char i_x, unsigned char i_y);
     void openCell(unsigned char i_x, unsigned char i_y);

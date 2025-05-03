@@ -1,12 +1,20 @@
 #ifndef GAMESETTING_H
 #define GAMESETTING_H
+#include <vector>
+#include <string>
 
 enum Difficulty
 {
     EASY = 0,
     NORMAL,
     HARD,
-    CUSTOM
+    // CUSTOM
+};
+
+inline const std::vector<std::string> mode_names = {
+    "EASY",
+    "NORMAL",
+    "HARD"
 };
 
 class GameSetting

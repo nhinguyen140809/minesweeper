@@ -63,9 +63,17 @@ char Board::getGameOver()
     return game_over;
 }
 
-void Board::draw(sf::RenderWindow &i_window)
+void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
 {
+    
 }
+
+void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
+{
+    
+}
+
+
 /*
  * Switch the state of the cell between flagged and unflagged
  */

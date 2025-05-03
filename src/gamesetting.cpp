@@ -1,6 +1,14 @@
 #include "gamesetting.h"
 #include "common.h"
 
+GameSetting::GameSetting()
+{
+    board_row = MIN_ROW;
+    board_column = MIN_COLUMN;
+    mines = MIN_MINES;
+    difficulty = EASY;
+}
+
 void GameSetting::setBoardRow(unsigned char i_row)
 {
     if (i_row < MIN_ROW || i_row > MAX_ROW)
