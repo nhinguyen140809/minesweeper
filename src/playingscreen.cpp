@@ -10,26 +10,26 @@
 
 PlayingScreen::PlayingScreen(sf::Font &font)
     : IGameScreen(font),
-      mine_text(font, "Mines: 0", TITLE_HEIGHT),
-      flag_text(font, "Flags: 0", TITLE_HEIGHT),
+      mine_text(font, "Mines: 0", FONT_HEIGHT),
+      flag_text(font, "Flags: 0", FONT_HEIGHT),
       game_over_text(font, "", TITLE_HEIGHT),
-      restart_button(WINDOW_WIDTH / 2.f + 100, 300, 130, 60, "RESTART", font),
-      back_button(WINDOW_WIDTH / 2.f + 100, 400, 130, 60, "BACK", font)
+      restart_button(WINDOW_WIDTH / 2.f + 100, 50 + WINDOW_HEIGHT/2.f, 170, 60, "RESTART", font),
+      back_button(WINDOW_WIDTH / 2.f - 100, 50 + WINDOW_HEIGHT/2.f, 130, 60, "BACK", font)
 {
     // Set the text properties
     mine_text.setFillColor(sf::Color::White);
     flag_text.setFillColor(sf::Color::White);
     game_over_text.setFillColor(sf::Color::White);
 
+    // Set the positions of the text
+    mine_text.setPosition({WINDOW_WIDTH / 2.f - 600, 50 + WINDOW_HEIGHT / 2.f});
+    flag_text.setPosition({WINDOW_WIDTH / 2.f - 600, -50 + WINDOW_HEIGHT / 2.f});
+    game_over_text.setPosition({WINDOW_WIDTH / 2.f, -150 + WINDOW_HEIGHT / 2.f});
+
     // Center the text
     IGameScreen::setCenterOrigin(mine_text);
     IGameScreen::setCenterOrigin(flag_text);
     IGameScreen::setCenterOrigin(game_over_text);
-
-    // Set the positions of the text
-    mine_text.setPosition({WINDOW_WIDTH / 2.f - 100, 50});
-    flag_text.setPosition({WINDOW_WIDTH / 2.f + 100, 50});
-    game_over_text.setPosition({WINDOW_WIDTH / 2.f, 100});
 }
 
 void PlayingScreen::render(sf::RenderWindow &window)
@@ -55,16 +55,13 @@ void PlayingScreen::handleInput(const sf::Event &event, sf::RenderWindow &window
 {
     if (event.is<sf::Event::MouseButtonReleased>()) {
         const sf::Event::MouseButtonReleased *mouse_event = event.getIf<sf::Event::MouseButtonReleased>();
-        sf::Vector2i mouse_pos = sf::Mouse::getPosition(window); // Get the mouse position
-        sf::Vector2f mouse_pos_f = window.mapPixelToCoords(mouse_pos); // Convert to world coordinates
-        if (mouse_event->button == sf::Mouse::Button::Left) {
-            if (board.getGameOver() == 0) {
-                board.handleInput(event, window); // Handle the input for the game board
-            } else if (restart_button.isMouseOver(mouse_pos_f)) {
-                reset(); // Reset the game board
-            } else if (back_button.isMouseOver(mouse_pos_f)) {
-                current_state = ScreenState::MENU; // Change the state to menu when the back button is clicked
-            }
+        sf::Vector2f mouse_pos_f = window.mapPixelToCoords(sf::Mouse::getPosition(window)); // Convert to world coordinates
+        if (board.getGameOver() == 0) {
+            board.handleInput(event, window); // Handle the input for the game board
+        } else if (restart_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left) {
+            reset(); // Reset the game board
+        } else if (back_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left) {
+            current_state = ScreenState::MENU; // Change the state to menu when the back button is clicked
         }
     }
 }
@@ -79,6 +76,7 @@ void PlayingScreen::update()
 {
     if (board.getGameOver() != 0) {
         game_over_text.setString(board.getGameOver() == 1 ? "YOU WIN!" : "YOU LOSE!"); // Set the game over text
+        IGameScreen::setCenterOrigin(game_over_text); // Center the game over text
     }
     else {
         // Update the mine and flag text based on the board state

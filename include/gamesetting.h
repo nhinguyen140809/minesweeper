@@ -20,7 +20,7 @@ inline const std::vector<std::string> mode_names = {
 class GameSetting
 {
 private:
-    unsigned char difficulty;
+    Difficulty difficulty;
     unsigned char board_column;
     unsigned char board_row;
     unsigned char mines;
@@ -35,8 +35,8 @@ public:
     GameSetting(GameSetting const &) = delete;    // Prevent copying
     void operator=(GameSetting const &) = delete; // Prevent assignment
 
-    void setDifficulty(unsigned char diff);
-    unsigned char getDifficulty();
+    void setDifficulty(Difficulty diff);
+    Difficulty getDifficulty();
 
     void setBoardColumn(unsigned char columns);
     unsigned char getBoardColumn();

@@ -2,7 +2,10 @@
 #include "gamesetting.h"
 #include "cell.h"
 #include "common.h"
+#include "flag-icon.h"
 #include <SFML/Graphics.hpp>
+#include <gamescreen.h>
+#include <iostream>
 
 Board::Board()
 {
@@ -18,12 +21,12 @@ Board::~Board()
 
 void Board::restart()
 {
-    if (!game_over)
-        return; // Only restart if the game is over
+    // if (!game_over)
+        // return; // Only restart if the game is over
     // Reset the game state
     game_over = 0;
     first_click = false;
-    mine_count = 0;
+    mine_count = GameSetting::getInstance().getMines();
     flag_count = 0;
     columns = GameSetting::getInstance().getBoardColumn();
     rows = GameSetting::getInstance().getBoardRow();
@@ -65,14 +68,73 @@ char Board::getGameOver()
 
 void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
 {
-    
+    sf::Vector2f board_origin = getBoardOrigin();                      // Get the board origin position
+    sf::RectangleShape cell_shape(sf::Vector2f(CELL_SIZE, CELL_SIZE)); // Create a rectangle shape for the cell
+    cell_shape.setOutlineThickness(1.f);                               // Set the outline thickness
+    cell_shape.setOutlineColor(sf::Color::Black);                      // Set the outline color
+
+    for (unsigned char x = 0; x < rows; x++)
+    {
+        for (unsigned char y = 0; y < columns; y++)
+        {
+            cell_shape.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE}); // Set the position of the cell shape
+            IGameScreen::setCenterOrigin(cell_shape);                                                 // Center the cell shape
+            if (cells[x][y].isOpened())
+            {
+                cell_shape.setFillColor(COLOR_OPEN_CELL);                                                // Set the fill color for opened cells
+                i_window.draw(cell_shape);                                                               // Draw the cell shape
+                if (cells[x][y].getMineCount() == 0) // If the cell is empty, do not draw the text
+                    continue;
+                sf::Text cell_text(i_font, std::to_string(cells[x][y].getMineCount()), FONT_HEIGHT);     // Create a text for the cell
+                cell_text.setFillColor(COLOR_CELL_TEXT);                                                 // Set the text color
+                cell_text.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE}); // Set the position of the text
+                IGameScreen::setCenterOrigin(cell_text);                                                 // Center the text
+                i_window.draw(cell_text);                                                                // Draw the cell text
+            }
+            else if (cells[x][y].isFlagged())
+            {
+                cell_shape.setFillColor(COLOR_CLOSED_CELL); // Set the fill color for flagged cells
+                sf::Texture flag_texture;
+                if (!flag_texture.loadFromMemory(flag_icon_png, flag_icon_png_len))
+                    return;                                                                                      // Load the flag icon texture
+                sf::Sprite flag_sprite(flag_texture);                                                            // Create a sprite for the flag icon
+                flag_sprite.scale({CELL_SIZE / flag_texture.getSize().x, CELL_SIZE / flag_texture.getSize().y}); // Scale the sprite to fit the cell
+                flag_sprite.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE});       // Set the position of the sprite
+                IGameScreen::setCenterOrigin(flag_sprite);                                                        // Center the sprite
+                i_window.draw(cell_shape);                                                                       // Draw the cell shape
+                i_window.draw(flag_sprite);                                                                      // Draw the flag sprite
+            }
+            else
+            {
+                cell_shape.setFillColor(COLOR_CLOSED_CELL); // Set the fill color for closed cells
+                i_window.draw(cell_shape);                  // Draw the cell shape
+            }
+        }
+    }
 }
 
 void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
 {
-    
-}
+    const sf::Event::MouseButtonReleased *mouse_event = i_event.getIf<sf::Event::MouseButtonReleased>();
+    sf::Vector2f mouse_pos_f = i_window.mapPixelToCoords(sf::Mouse::getPosition(i_window)); // Convert mouse position to world coordinates
 
+    sf::Vector2f board_origin = getBoardOrigin(); // Get the board origin position
+
+    int col = (mouse_pos_f.x - board_origin.x + CELL_SIZE/2.f) / CELL_SIZE; // Calculate the column index
+    int row = (mouse_pos_f.y - board_origin.y + CELL_SIZE/2.f) / CELL_SIZE; // Calculate the row index
+
+    if (col < 0 || col >= columns || row < 0 || row >= rows)
+        return; // Ignore clicks outside the board
+
+    if (mouse_event && mouse_event->button == sf::Mouse::Button::Left)
+    {
+        openCell(row, col); // Open the cell on left click
+    }
+    else if (mouse_event && mouse_event->button == sf::Mouse::Button::Right)
+    {
+        flagCell(row, col); // Flag the cell on right click
+    }
+}
 
 /*
  * Switch the state of the cell between flagged and unflagged
@@ -102,7 +164,6 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
     if (!first_click)
     {
         first_click = true;
-        mine_count = GameSetting::getInstance().getMines();
         // Place mines randomly
         std::uniform_int_distribution<unsigned char> x_distribution(0, rows - 1);
         std::uniform_int_distribution<unsigned char> y_distribution(0, columns - 1);
@@ -240,4 +301,23 @@ void Board::setMouseState(unsigned char i_mouse_state, unsigned char i_x, unsign
         return; // Do not set mouse state if the game is over
 
     cells[i_x][i_y].setMouseState(i_mouse_state);
+}
+
+int Board::getFlagCount()
+{
+    return flag_count;
+}
+
+int Board::getMineCount()
+{
+    return mine_count;
+}
+
+sf::Vector2f Board::getBoardOrigin()
+{
+    float board_width = columns * CELL_SIZE;
+    float board_height = rows * CELL_SIZE;
+    float board_x = (WINDOW_WIDTH - board_width + CELL_SIZE) / 2.f;
+    float board_y = (WINDOW_HEIGHT - board_height + CELL_SIZE) / 2.f; // Adjust the vertical position to center the board
+    return sf::Vector2f(board_x, board_y);
 }

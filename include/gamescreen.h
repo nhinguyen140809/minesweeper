@@ -4,6 +4,13 @@
 #include "gamebutton.h"
 #include "common.h"
 
+enum class ScreenState
+{
+    MENU,
+    INSTRUCTION,
+    PLAYING,
+};
+
 class IGameScreen
 {
 public:
@@ -13,16 +20,11 @@ public:
     virtual void update() = 0;                                                                                  // Update the screen state
     virtual ~IGameScreen() = default;                                                                           // Virtual destructor for proper cleanup of derived classes
     // Utility functions
-    static void setCenterOrigin(sf::Text &text); // Set the origin of the text to its center
+    static void setCenterOrigin(sf::Text &text);            // Set the origin of the text to its center
+    static void setCenterOrigin(sf::RectangleShape &shape); // Set the origin of the shape to its center
+    static void setCenterOrigin(sf::Sprite &sprite);        // Set the origin of the sprite to its center
 protected:
     sf::Font font; // Font used for rendering text on the screen
-};
-
-enum class ScreenState
-{
-    MENU,
-    INSTRUCTION,
-    PLAYING,
 };
 
 #endif // GAMESCREEN_H

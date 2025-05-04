@@ -33,7 +33,7 @@ unsigned char GameSetting::getBoardColumn()
     return board_column;
 }
 
-void GameSetting::setDifficulty(unsigned char i_difficulty)
+void GameSetting::setDifficulty(Difficulty i_difficulty)
 {
     difficulty = i_difficulty;
     switch (difficulty)
@@ -52,7 +52,7 @@ void GameSetting::setDifficulty(unsigned char i_difficulty)
     }
 }
 
-unsigned char GameSetting::getDifficulty()
+Difficulty GameSetting::getDifficulty()
 {
     return difficulty;
 }
@@ -71,9 +71,9 @@ unsigned char GameSetting::getMines()
 
 void GameSetting::setEasyMode()
 {
-    board_row = 8;
-    board_column = 8;
-    mines = 16;
+    board_row = MIN_ROW;
+    board_column = MIN_COLUMN;
+    mines = MIN_MINES;
     difficulty = EASY;
 }
 
@@ -87,8 +87,8 @@ void GameSetting::setNormalMode()
 
 void GameSetting::setHardMode()
 {
-    board_row = 22;
-    board_column = 22;
-    mines = 150;
+    board_row = MAX_ROW;
+    board_column = MAX_COLUMN;
+    mines = MAX_MINES;
     difficulty = HARD;
 }

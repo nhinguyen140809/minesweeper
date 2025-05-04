@@ -1,6 +1,7 @@
 #include "gamebutton.h"
 #include "common.h"
 #include "gamesetting.h"
+#include "gamescreen.h"
 #include <SFML/Graphics.hpp>
 
 GameButton::GameButton(float x, float y, float width, float height, const std::string &label, sf::Font &font)
@@ -14,10 +15,8 @@ GameButton::GameButton(float x, float y, float width, float height, const std::s
     text.setFillColor(COLOR_TEXT); // Set the text color
 
     // Center the text inside the button
-    sf::FloatRect textBounds = text.getLocalBounds();
-    text.setOrigin({textBounds.position.x + textBounds.size.x / 2.f,
-                    textBounds.position.y + textBounds.size.y / 2.f});
     text.setPosition({x, y}); // Set the position of the text to the center of the button
+    IGameScreen::setCenterOrigin(text); // Center the origin of the text
 }
 
 void GameButton::draw(sf::RenderTarget &target, sf::RenderStates states) const
@@ -39,9 +38,6 @@ void GameButton::setFillColor(const sf::Color &color)
 void GameButton::setText(const std::string &label)
 {
     text.setString(label);                            // Set the text of the button
-    sf::FloatRect textBounds = text.getLocalBounds(); // Get the bounds of the text
-    text.setOrigin({textBounds.position.x + textBounds.size.x / 2.f,
-                    textBounds.position.y + textBounds.size.y / 2.f}); // Center the text
-
+    IGameScreen::setCenterOrigin(text); // Center the text
     text.setPosition({button.getPosition().x, button.getPosition().y}); // Set the position of the text to the center of the button
 }

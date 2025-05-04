@@ -8,21 +8,21 @@
 MainMenu::MainMenu(sf::Font &font)
     : IGameScreen(font),
       title(font, "MINESWEEPER", TITLE_HEIGHT),
-      mode_text(font, mode_names[GameSetting::getInstance().getDifficulty()], TITLE_HEIGHT),
-      play_button(WINDOW_WIDTH / 2.f, 350, 130, 60, "PLAY", font),
-      instruction_button(WINDOW_WIDTH / 2.f, 450, 250, 60, "INSTRUCTION", font),
-      left_arrow_button(310, 250, 30, 50, "<", font),
-      right_arrow_button(490, 250, 30, 50, ">", font)
+      mode_text(font, mode_names[GameSetting::getInstance().getDifficulty()], FONT_HEIGHT),
+      play_button(WINDOW_WIDTH / 2.f, 50 + WINDOW_HEIGHT / 2.f, 130, 60, "PLAY", font),
+      instruction_button(WINDOW_WIDTH / 2.f, 150 + WINDOW_HEIGHT / 2.f, 250, 60, "INSTRUCTION", font),
+      left_arrow_button(-90 + WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f, 30, 50, "<", font),
+      right_arrow_button(+90 + WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f, 30, 50, ">", font)
 {
     // Set the title text properties
     title.setFillColor(sf::Color::White);
     IGameScreen::setCenterOrigin(title); // Center the title text
-    title.setPosition({WINDOW_WIDTH / 2.f, 100});
+    title.setPosition({WINDOW_WIDTH / 2.f, -200 + WINDOW_HEIGHT / 2.f});
 
     // Set the mode text properties
     mode_text.setFillColor(sf::Color::White);
     IGameScreen::setCenterOrigin(mode_text); // Center the mode text
-    mode_text.setPosition({WINDOW_WIDTH / 2.f, 250});
+    mode_text.setPosition({WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f});
 }
 
 void MainMenu::render(sf::RenderWindow &window)
@@ -42,7 +42,7 @@ void MainMenu::handleInput(const sf::Event &event, sf::RenderWindow &window, Scr
     if (event.is<sf::Event::MouseButtonReleased>())
     {
         const sf::Event::MouseButtonReleased *mouse_event = event.getIf<sf::Event::MouseButtonReleased>();
-        sf::Vector2i mouse_pos = sf::Mouse::getPosition(window); // Get the mouse position
+        sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);       // Get the mouse position
         sf::Vector2f mouse_pos_f = window.mapPixelToCoords(mouse_pos); // Convert to world coordinates
 
         if (mouse_event && mouse_event->button == sf::Mouse::Button::Left)
@@ -72,5 +72,5 @@ void MainMenu::handleInput(const sf::Event &event, sf::RenderWindow &window, Scr
 void MainMenu::update()
 {
     mode_text.setString(mode_names[GameSetting::getInstance().getDifficulty()]); // Update the mode text
-    IGameScreen::setCenterOrigin(mode_text); // Center the mode text
+    IGameScreen::setCenterOrigin(mode_text);                                     // Center the mode text
 }

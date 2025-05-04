@@ -15,9 +15,9 @@ private:
 
     unsigned char columns;
     unsigned char rows;
-    unsigned char mine_count;
-    unsigned char flag_count;
-    unsigned char closed_count;
+    unsigned int mine_count;
+    unsigned int flag_count;
+    unsigned int closed_count;
 
     std::default_random_engine random_generator;
     std::random_device random_device;
@@ -27,6 +27,7 @@ private:
     int countClosedAround(unsigned char i_x, unsigned char i_y);
     void openCellsAround(unsigned char i_x, unsigned char i_y);
     void flagCellsAround(unsigned char i_x, unsigned char i_y);
+    sf::Vector2f getBoardOrigin();
 
 public:
     Board();
@@ -39,6 +40,9 @@ public:
 
     void flagCell(unsigned char i_x, unsigned char i_y);
     void openCell(unsigned char i_x, unsigned char i_y);
+
+    int getFlagCount();
+    int getMineCount();
 
     void restart();
 
