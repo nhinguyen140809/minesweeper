@@ -5,6 +5,7 @@
 #include "gamesetting.h"
 #include "gamescreen.h"
 #include "gamebutton.h"
+#include "mine-icon.h"
 
 class MainMenu : public IGameScreen
 {

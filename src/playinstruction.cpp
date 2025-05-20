@@ -11,7 +11,7 @@ PlayInstruction::PlayInstruction(sf::Font &font)
     : IGameScreen(font),
       title(font, "INSTRUCTION", TITLE_HEIGHT),
       instruction_text(font, "", FONT_HEIGHT),
-      back_button(WINDOW_WIDTH / 2.f, 400 + WINDOW_HEIGHT/2.f, 130, 60, "BACK", font)
+      back_button(WINDOW_WIDTH / 2.f, 350 + WINDOW_HEIGHT/2.f, 130, 60, "BACK", font)
 {
     // Set the title text properties
     title.setFillColor(COLOR_TEXT);
@@ -21,9 +21,14 @@ PlayInstruction::PlayInstruction(sf::Font &font)
     // Set the instruction text properties
     instruction_text.setFillColor(COLOR_TEXT);
     instruction_text.setPosition({WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f}); // Set the position of the instruction text
-    setInstructionText("INSTRUCTION TEXT HERE\n"
-                       "INSTRUCTION TEXT HERE\n"
-                       "INSTRUCTION TEXT HERE\n");  // Set the default instruction text
+    setInstructionText( "Left-click to uncover a cell. Right-click to place or remove \na flag on a suspected mine."
+                        "Numbered cells indicate how many \nmines are adjacent to it.\n\n"
+                        "If a numbered cell has the correct number of surrounding flags,\n"
+                        "left-click it to reveal all nearby unflagged cells.\n"
+                        "If a numbered cell has the same number of surrounding closed cells \nas its number, "
+                        "left-click on it to flag all nearby closed cells.\n\n"
+                        "Uncover all safe cells and flag all mines to win.\n"
+                        "Hitting a mine ends the game.");  // Set the default instruction text
     IGameScreen::setCenterOrigin(instruction_text); // Center the instruction text
 }
 

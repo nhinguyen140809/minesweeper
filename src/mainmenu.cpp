@@ -1,9 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include "mainmenu.h"
-#include "common.h"
-#include "gamesetting.h"
-#include "gamescreen.h"
-#include "gamebutton.h"
 
 MainMenu::MainMenu(sf::Font &font)
     : IGameScreen(font),
