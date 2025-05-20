@@ -3,9 +3,11 @@
 #include "cell.h"
 #include "common.h"
 #include "flag-icon.h"
+#include "mine-icon.h"
 #include <SFML/Graphics.hpp>
 #include <gamescreen.h>
 #include <iostream>
+#include <queue>
 
 Board::Board()
 {
@@ -22,7 +24,7 @@ Board::~Board()
 void Board::restart()
 {
     // if (!game_over)
-        // return; // Only restart if the game is over
+    // return; // Only restart if the game is over
     // Reset the game state
     game_over = 0;
     first_click = false;
@@ -70,8 +72,8 @@ void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
 {
     sf::Vector2f board_origin = getBoardOrigin();                      // Get the board origin position
     sf::RectangleShape cell_shape(sf::Vector2f(CELL_SIZE, CELL_SIZE)); // Create a rectangle shape for the cell
-    cell_shape.setOutlineThickness(1.f);                               // Set the outline thickness
-    cell_shape.setOutlineColor(sf::Color::Black);                      // Set the outline color
+    cell_shape.setOutlineThickness(1.2);                               // Set the outline thickness
+    cell_shape.setOutlineColor(COLOR_CELL_OUTLINE);                      // Set the outline color
 
     for (unsigned char x = 0; x < rows; x++)
     {
@@ -79,11 +81,32 @@ void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
         {
             cell_shape.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE}); // Set the position of the cell shape
             IGameScreen::setCenterOrigin(cell_shape);                                                 // Center the cell shape
+
+            // If the effect timer is triggered, draw the cell with the effect color
+            if (cells[x][y].getEffectTimer() < EFFECT_DURATION)
+            {
+                cell_shape.setFillColor((game_over == 1) ? COLOR_WIN_CELL : COLOR_LOSE_CELL); // Set the fill color for the effect
+                i_window.draw(cell_shape);                                                    // Draw the cell shape
+                if (cells[x][y].isMine())
+                {
+                    sf::Texture mine_texture;
+                    if (!mine_texture.loadFromMemory(mine_icon_png, mine_icon_png_len))
+                        return;                                                                                                    // Load the mine texture
+                    sf::Sprite mine_sprite(mine_texture);                                                                          // Create a sprite for the mine icon
+                    mine_sprite.scale({(CELL_SIZE - 10) / mine_texture.getSize().x, (CELL_SIZE - 10) / mine_texture.getSize().y}); // Scale the sprite to fit the cell
+                    mine_sprite.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE});                     // Set the position of the sprite
+                    IGameScreen::setCenterOrigin(mine_sprite);                                                                     // Center the sprite
+                    i_window.draw(mine_sprite);                                                                                    // Draw the mine sprite
+                }
+                continue;
+            }
+
+            // If the cell is opened, draw it with the opened color and the number of mines around it
             if (cells[x][y].isOpened())
             {
-                cell_shape.setFillColor(COLOR_OPEN_CELL);                                                // Set the fill color for opened cells
-                i_window.draw(cell_shape);                                                               // Draw the cell shape
-                if (cells[x][y].getMineCount() == 0) // If the cell is empty, do not draw the text
+                cell_shape.setFillColor(COLOR_OPEN_CELL); // Set the fill color for opened cells
+                i_window.draw(cell_shape);                // Draw the cell shape
+                if (cells[x][y].getMineCount() == 0)      // If the cell is empty, do not draw the text
                     continue;
                 sf::Text cell_text(i_font, std::to_string(cells[x][y].getMineCount()), FONT_HEIGHT);     // Create a text for the cell
                 cell_text.setFillColor(COLOR_CELL_TEXT);                                                 // Set the text color
@@ -91,19 +114,21 @@ void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
                 IGameScreen::setCenterOrigin(cell_text);                                                 // Center the text
                 i_window.draw(cell_text);                                                                // Draw the cell text
             }
+            // If the cell is flagged, draw it with the flagged color and the flag icon
             else if (cells[x][y].isFlagged())
             {
                 cell_shape.setFillColor(COLOR_CLOSED_CELL); // Set the fill color for flagged cells
                 sf::Texture flag_texture;
                 if (!flag_texture.loadFromMemory(flag_icon_png, flag_icon_png_len))
-                    return;                                                                                      // Load the flag icon texture
-                sf::Sprite flag_sprite(flag_texture);                                                            // Create a sprite for the flag icon
-                flag_sprite.scale({CELL_SIZE / flag_texture.getSize().x, CELL_SIZE / flag_texture.getSize().y}); // Scale the sprite to fit the cell
-                flag_sprite.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE});       // Set the position of the sprite
-                IGameScreen::setCenterOrigin(flag_sprite);                                                        // Center the sprite
-                i_window.draw(cell_shape);                                                                       // Draw the cell shape
-                i_window.draw(flag_sprite);                                                                      // Draw the flag sprite
+                    return;                                                                                                    // Load the flag icon texture
+                sf::Sprite flag_sprite(flag_texture);                                                                          // Create a sprite for the flag icon
+                flag_sprite.scale({(CELL_SIZE - 10) / flag_texture.getSize().x, (CELL_SIZE - 10) / flag_texture.getSize().y}); // Scale the sprite to fit the cell
+                flag_sprite.setPosition({board_origin.x + y * CELL_SIZE, board_origin.y + x * CELL_SIZE});                     // Set the position of the sprite
+                IGameScreen::setCenterOrigin(flag_sprite);                                                                     // Center the sprite
+                i_window.draw(cell_shape);                                                                                     // Draw the cell shape
+                i_window.draw(flag_sprite);                                                                                    // Draw the flag sprite
             }
+            // If the cell is closed, draw it with the closed color
             else
             {
                 cell_shape.setFillColor(COLOR_CLOSED_CELL); // Set the fill color for closed cells
@@ -120,8 +145,8 @@ void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
 
     sf::Vector2f board_origin = getBoardOrigin(); // Get the board origin position
 
-    int col = (mouse_pos_f.x - board_origin.x + CELL_SIZE/2.f) / CELL_SIZE; // Calculate the column index
-    int row = (mouse_pos_f.y - board_origin.y + CELL_SIZE/2.f) / CELL_SIZE; // Calculate the row index
+    int col = (mouse_pos_f.x - board_origin.x + CELL_SIZE / 2.f) / CELL_SIZE; // Calculate the column index
+    int row = (mouse_pos_f.y - board_origin.y + CELL_SIZE / 2.f) / CELL_SIZE; // Calculate the row index
 
     if (col < 0 || col >= columns || row < 0 || row >= rows)
         return; // Ignore clicks outside the board
@@ -136,6 +161,50 @@ void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
     }
 }
 
+// Only update the effect timer of the cells, called in the main loop
+void Board::update()
+{
+    effect_frame_count++;
+    if (effect_frame_count % FRAME_DURATION != 0) // Update every frame duration
+    {
+        return; // Do not update if the frame duration is not reached
+    }
+    // The frame duration is reached, reset the frame count
+    effect_frame_count = 0;
+    // Update the effect timer of the cells
+    std::queue<std::pair<unsigned char, unsigned char>> cells_to_update;
+    for (unsigned char x = 0; x < rows; x++)
+    {
+        for (unsigned char y = 0; y < columns; y++)
+        {
+            if (cells[x][y].getEffectTimer() < EFFECT_DURATION)
+            {
+                cells[x][y].updateEffectTimer(); // Update the effect timer
+                if (cells[x][y].getEffectTimer() == EFFECT_DURATION - 2) {
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        for (int dy = -1; dy <= 1; dy++)
+                        {
+                            if (x + dx >= 0 && x + dx < rows && y + dy >= 0 && y + dy < columns && cells[x + dx][y + dy].getEffectTimer() == EFFECT_DURATION)
+                            {
+                                if (dx == 0 || dy == 0)
+                                    cells_to_update.push({x + dx, y + dy}); // Add the surrounding not-triggered cells to the queue
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    while (!cells_to_update.empty())
+    {
+        auto cell = cells_to_update.front();
+        cells[cell.first][cell.second].setEffectTimer(EFFECT_DURATION - 1); // Update the effect timer of the surrounding cells
+        cells_to_update.pop();
+    }
+}
+
 /*
  * Switch the state of the cell between flagged and unflagged
  */
@@ -143,6 +212,9 @@ void Board::flagCell(unsigned char i_x, unsigned char i_y)
 {
     if (game_over)
         return; // Do not flag if the game is over
+
+    if (cells[i_x][i_y].isOpened()) // Do not flag if the cell is opened
+        return;
 
     if (cells[i_x][i_y].isFlagged())
     {
@@ -153,6 +225,12 @@ void Board::flagCell(unsigned char i_x, unsigned char i_y)
     {
         cells[i_x][i_y].flag(); // Flag the cell
         flag_count++;
+    }
+
+    if (flag_count == mine_count && closed_count == mine_count)
+    {
+        game_over = 1; // Win
+        cells[i_x][i_y].setEffectTimer(EFFECT_DURATION - 1);
     }
 }
 
@@ -174,7 +252,7 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
             {
                 x = x_distribution(random_generator);
                 y = y_distribution(random_generator);
-            } while (cells[x][y].isMine() || (x == i_x && y == i_y)); // Avoid placing a mine on the first click
+            } while (cells[x][y].isMine() || (x <= i_x + 1 && x >= i_x -1 && y <= i_y + 1 && y >= i_y - 1 )); // Avoid placing a mine on and surround the first click
 
             // Set mine in the cell
             cells[x][y].setMine();
@@ -202,7 +280,8 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
 
     if (result == MINE_TRIGGERED)
     {
-        game_over = -1; // Lose
+        game_over = -1;                                      // Lose
+        cells[i_x][i_y].setEffectTimer(EFFECT_DURATION - 1); // Set the effect timer for the triggered mine
     }
     else if (result == OPENED_EMPTY)
     {
@@ -222,7 +301,7 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
         closed_count--;
     }
 
-    if (closed_count == mine_count)
+    if (closed_count == mine_count && flag_count == mine_count)
     {
         game_over = 1; // Win
         cells[i_x][i_y].setEffectTimer(EFFECT_DURATION - 1);

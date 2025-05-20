@@ -81,7 +81,7 @@ void GameSetting::setNormalMode()
 {
     board_row = 16;
     board_column = 16;
-    mines = 80;
+    mines = 40;
     difficulty = NORMAL;
 }
 

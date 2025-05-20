@@ -13,13 +13,13 @@ PlayingScreen::PlayingScreen(sf::Font &font)
       mine_text(font, "Mines: 0", FONT_HEIGHT),
       flag_text(font, "Flags: 0", FONT_HEIGHT),
       game_over_text(font, "", TITLE_HEIGHT),
-      restart_button(WINDOW_WIDTH / 2.f + 100, 50 + WINDOW_HEIGHT/2.f, 170, 60, "RESTART", font),
-      back_button(WINDOW_WIDTH / 2.f - 100, 50 + WINDOW_HEIGHT/2.f, 130, 60, "BACK", font)
+      restart_button(WINDOW_WIDTH / 2.f + 100, 50 + WINDOW_HEIGHT / 2.f, 170, 60, "RESTART", font),
+      back_button(WINDOW_WIDTH / 2.f - 100, 50 + WINDOW_HEIGHT / 2.f, 130, 60, "BACK", font)
 {
     // Set the text properties
-    mine_text.setFillColor(sf::Color::White);
-    flag_text.setFillColor(sf::Color::White);
-    game_over_text.setFillColor(sf::Color::White);
+    mine_text.setFillColor(COLOR_TEXT);
+    flag_text.setFillColor(COLOR_TEXT);
+    game_over_text.setFillColor(COLOR_TEXT);
 
     // Set the positions of the text
     mine_text.setPosition({WINDOW_WIDTH / 2.f - 600, 50 + WINDOW_HEIGHT / 2.f});
@@ -37,9 +37,14 @@ void PlayingScreen::render(sf::RenderWindow &window)
     window.clear(COLOR_BACKGROUND); // Clear the window with a black color
     if (board.getGameOver() != 0)
     {
-        window.draw(game_over_text); // Draw the game over text
-        window.draw(restart_button); // Draw the restart button
-        window.draw(back_button);    // Draw the back button
+        if (board.effectOver()) {
+            window.draw(game_over_text);    // Draw the game over text
+            window.draw(restart_button);    // Draw the restart button
+            window.draw(back_button);       // Draw the back button
+        }
+        else {
+            board.draw(window, this->font); // Draw the game board
+        }
     }
     else
     {
@@ -53,14 +58,20 @@ void PlayingScreen::render(sf::RenderWindow &window)
 
 void PlayingScreen::handleInput(const sf::Event &event, sf::RenderWindow &window, ScreenState &current_state)
 {
-    if (event.is<sf::Event::MouseButtonReleased>()) {
+    if (event.is<sf::Event::MouseButtonReleased>())
+    {
         const sf::Event::MouseButtonReleased *mouse_event = event.getIf<sf::Event::MouseButtonReleased>();
         sf::Vector2f mouse_pos_f = window.mapPixelToCoords(sf::Mouse::getPosition(window)); // Convert to world coordinates
-        if (board.getGameOver() == 0) {
+        if (board.getGameOver() == 0)
+        {
             board.handleInput(event, window); // Handle the input for the game board
-        } else if (restart_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left) {
+        }
+        else if (restart_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left)
+        {
             reset(); // Reset the game board
-        } else if (back_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left) {
+        }
+        else if (back_button.isMouseOver(mouse_pos_f) && mouse_event->button == sf::Mouse::Button::Left)
+        {
             current_state = ScreenState::MENU; // Change the state to menu when the back button is clicked
         }
     }
@@ -74,11 +85,14 @@ void PlayingScreen::reset()
 
 void PlayingScreen::update()
 {
-    if (board.getGameOver() != 0) {
+    if (board.getGameOver() != 0)
+    {
+        board.update(); // Update the game board
         game_over_text.setString(board.getGameOver() == 1 ? "YOU WIN!" : "YOU LOSE!"); // Set the game over text
-        IGameScreen::setCenterOrigin(game_over_text); // Center the game over text
+        IGameScreen::setCenterOrigin(game_over_text);                                  // Center the game over text
     }
-    else {
+    else
+    {
         // Update the mine and flag text based on the board state
         setMineText("Mines: " + std::to_string(board.getMineCount()));
         setFlagText("Flags: " + std::to_string(board.getFlagCount()));

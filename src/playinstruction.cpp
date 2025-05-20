@@ -14,12 +14,12 @@ PlayInstruction::PlayInstruction(sf::Font &font)
       back_button(WINDOW_WIDTH / 2.f, 400 + WINDOW_HEIGHT/2.f, 130, 60, "BACK", font)
 {
     // Set the title text properties
-    title.setFillColor(sf::Color::White);
+    title.setFillColor(COLOR_TEXT);
     IGameScreen::setCenterOrigin(title); // Center the title text
     title.setPosition({WINDOW_WIDTH / 2.f, -300 + WINDOW_HEIGHT / 2.f});
 
     // Set the instruction text properties
-    instruction_text.setFillColor(sf::Color::White);
+    instruction_text.setFillColor(COLOR_TEXT);
     instruction_text.setPosition({WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f}); // Set the position of the instruction text
     setInstructionText("INSTRUCTION TEXT HERE\n"
                        "INSTRUCTION TEXT HERE\n"

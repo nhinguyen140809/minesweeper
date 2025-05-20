@@ -10,8 +10,9 @@
 class Board
 {
 private:
-    bool first_click; // 0 if not clicked, 1 if clicked
-    char game_over;   // 0 if not over, 1 if win, -1 if lose
+    bool first_click;                // 0 if not clicked, 1 if clicked
+    char game_over;                  // 0 if not over, 1 if win, -1 if lose
+    unsigned int effect_frame_count; // Frame count for effect duration
 
     unsigned char columns;
     unsigned char rows;
@@ -35,8 +36,9 @@ public:
     bool effectOver();
     char getGameOver();
 
-    void draw(sf::RenderWindow& window, sf::Font& font);
-    void handleInput(const sf::Event& event, sf::RenderWindow& window);
+    void draw(sf::RenderWindow &window, sf::Font &font);
+    void handleInput(const sf::Event &event, sf::RenderWindow &window);
+    void update();
 
     void flagCell(unsigned char i_x, unsigned char i_y);
     void openCell(unsigned char i_x, unsigned char i_y);

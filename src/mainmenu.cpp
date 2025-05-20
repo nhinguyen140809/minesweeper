@@ -15,12 +15,12 @@ MainMenu::MainMenu(sf::Font &font)
       right_arrow_button(+90 + WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f, 30, 50, ">", font)
 {
     // Set the title text properties
-    title.setFillColor(sf::Color::White);
+    title.setFillColor(COLOR_TEXT);
     IGameScreen::setCenterOrigin(title); // Center the title text
     title.setPosition({WINDOW_WIDTH / 2.f, -200 + WINDOW_HEIGHT / 2.f});
 
     // Set the mode text properties
-    mode_text.setFillColor(sf::Color::White);
+    mode_text.setFillColor(COLOR_TEXT);
     IGameScreen::setCenterOrigin(mode_text); // Center the mode text
     mode_text.setPosition({WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f});
 }
