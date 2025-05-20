@@ -4,6 +4,7 @@
 #include "common.h"
 #include "gamescreen.h"
 #include "gamebutton.h"
+#include "gamesetting.h"
 #include <string>
 
 class PlayInstruction : public IGameScreen

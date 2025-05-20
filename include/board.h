@@ -3,9 +3,15 @@
 
 #include <vector>
 #include <random>
+#include <queue>
+#include <SFML/Graphics.hpp>
 #include "cell.h"
 #include "gamesetting.h"
-#include <SFML/Graphics.hpp>
+#include "common.h"
+#include "gamescreen.h"
+#include "flag-icon.h"
+#include "mine-icon.h"
+
 
 class Board
 {

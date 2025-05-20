@@ -10,7 +10,7 @@ constexpr unsigned char MAX_ROW = 20;
 constexpr unsigned char MIN_COLUMN = 12;
 constexpr unsigned char MAX_COLUMN = 22;
 constexpr unsigned char MIN_MINES = 12;
-constexpr unsigned char MAX_MINES = 80;
+constexpr unsigned char MAX_MINES = 100;
 
 // Game design constants
 constexpr unsigned int WINDOW_WIDTH = 1600;

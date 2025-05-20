@@ -2,6 +2,7 @@
 #define GAMESETTING_H
 #include <vector>
 #include <string>
+#include "common.h"
 
 enum Difficulty
 {

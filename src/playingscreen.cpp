@@ -1,11 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include "mainmenu.h"
-#include "common.h"
-#include "gamesetting.h"
-#include "gamescreen.h"
-#include "gamebutton.h"
-#include "board.h"
-#include "cell.h"
 #include "playingscreen.h"
 
 PlayingScreen::PlayingScreen(sf::Font &font)
@@ -37,12 +29,14 @@ void PlayingScreen::render(sf::RenderWindow &window)
     window.clear(COLOR_BACKGROUND); // Clear the window with a black color
     if (board.getGameOver() != 0)
     {
-        if (board.effectOver()) {
-            window.draw(game_over_text);    // Draw the game over text
-            window.draw(restart_button);    // Draw the restart button
-            window.draw(back_button);       // Draw the back button
+        if (board.effectOver())
+        {
+            window.draw(game_over_text); // Draw the game over text
+            window.draw(restart_button); // Draw the restart button
+            window.draw(back_button);    // Draw the back button
         }
-        else {
+        else
+        {
             board.draw(window, this->font); // Draw the game board
         }
     }
@@ -87,7 +81,7 @@ void PlayingScreen::update()
 {
     if (board.getGameOver() != 0)
     {
-        board.update(); // Update the game board
+        board.update();                                                                // Update the game board
         game_over_text.setString(board.getGameOver() == 1 ? "YOU WIN!" : "YOU LOSE!"); // Set the game over text
         IGameScreen::setCenterOrigin(game_over_text);                                  // Center the game over text
     }

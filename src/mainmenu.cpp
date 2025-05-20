@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include "mainmenu.h"
 
 MainMenu::MainMenu(sf::Font &font)

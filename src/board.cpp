@@ -1,13 +1,4 @@
 #include "board.h"
-#include "gamesetting.h"
-#include "cell.h"
-#include "common.h"
-#include "flag-icon.h"
-#include "mine-icon.h"
-#include <SFML/Graphics.hpp>
-#include <gamescreen.h>
-#include <iostream>
-#include <queue>
 
 Board::Board()
 {
@@ -21,6 +12,9 @@ Board::~Board()
     cells.clear();
 }
 
+/*
+ * Reset the board
+ */
 void Board::restart()
 {
     // if (!game_over)
@@ -48,6 +42,9 @@ void Board::restart()
     }
 }
 
+/*
+ * Check if the effect timer of all cells is over
+ */
 bool Board::effectOver()
 {
     for (unsigned char x = 0; x < rows; x++)
@@ -67,13 +64,15 @@ char Board::getGameOver()
 {
     return game_over;
 }
-
+/*
+ * Draw the board and cells to the given window
+ */
 void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
 {
     sf::Vector2f board_origin = getBoardOrigin();                      // Get the board origin position
     sf::RectangleShape cell_shape(sf::Vector2f(CELL_SIZE, CELL_SIZE)); // Create a rectangle shape for the cell
     cell_shape.setOutlineThickness(1.2);                               // Set the outline thickness
-    cell_shape.setOutlineColor(COLOR_CELL_OUTLINE);                      // Set the outline color
+    cell_shape.setOutlineColor(COLOR_CELL_OUTLINE);                    // Set the outline color
 
     for (unsigned char x = 0; x < rows; x++)
     {
@@ -138,6 +137,11 @@ void Board::draw(sf::RenderWindow &i_window, sf::Font &i_font)
     }
 }
 
+/*
+ * Handle input events for the board
+ * Only handle mouse button released events
+ */
+
 void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
 {
     const sf::Event::MouseButtonReleased *mouse_event = i_event.getIf<sf::Event::MouseButtonReleased>();
@@ -161,7 +165,9 @@ void Board::handleInput(const sf::Event &i_event, sf::RenderWindow &i_window)
     }
 }
 
-// Only update the effect timer of the cells, called in the main loop
+/*
+ * Update the effect timer of the cells when the game is over, called in the main loop
+ */
 void Board::update()
 {
     effect_frame_count++;
@@ -180,7 +186,8 @@ void Board::update()
             if (cells[x][y].getEffectTimer() < EFFECT_DURATION)
             {
                 cells[x][y].updateEffectTimer(); // Update the effect timer
-                if (cells[x][y].getEffectTimer() == EFFECT_DURATION - 2) {
+                if (cells[x][y].getEffectTimer() == EFFECT_DURATION - 2)
+                {
                     for (int dx = -1; dx <= 1; dx++)
                     {
                         for (int dy = -1; dy <= 1; dy++)
@@ -206,7 +213,7 @@ void Board::update()
 }
 
 /*
- * Switch the state of the cell between flagged and unflagged
+ * Switch the state of the cell between flagged and unflagged, update the flag count
  */
 void Board::flagCell(unsigned char i_x, unsigned char i_y)
 {
@@ -229,11 +236,15 @@ void Board::flagCell(unsigned char i_x, unsigned char i_y)
 
     if (flag_count == mine_count && closed_count == mine_count)
     {
-        game_over = 1; // Win
-        cells[i_x][i_y].setEffectTimer(EFFECT_DURATION - 1);
+        game_over = 1;                                       // Win
+        cells[i_x][i_y].setEffectTimer(EFFECT_DURATION - 1); // Trigger the effect for the last flagged cell
     }
 }
 
+/*
+ * Open the given cell
+ * Handle the first click and chording conditions
+ */
 void Board::openCell(unsigned char i_x, unsigned char i_y)
 {
     if (game_over)
@@ -252,7 +263,7 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
             {
                 x = x_distribution(random_generator);
                 y = y_distribution(random_generator);
-            } while (cells[x][y].isMine() || (x <= i_x + 1 && x >= i_x -1 && y <= i_y + 1 && y >= i_y - 1 )); // Avoid placing a mine on and surround the first click
+            } while (cells[x][y].isMine() || (x <= i_x + 1 && x >= i_x - 1 && y <= i_y + 1 && y >= i_y - 1)); // Avoid placing a mine on and surround the first click
 
             // Set mine in the cell
             cells[x][y].setMine();
@@ -308,6 +319,10 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
     }
 }
 
+/*
+ * Count the number of flagged cells around the given cell
+ * Return the count of flagged cells
+ */
 int Board::countFlagAround(unsigned char i_x, unsigned char i_y)
 {
     int count = 0;
@@ -325,6 +340,10 @@ int Board::countFlagAround(unsigned char i_x, unsigned char i_y)
     return count;
 }
 
+/*
+ * Count the number of closed cells around the given cell
+ * Return the count of closed cells
+ */
 int Board::countClosedAround(unsigned char i_x, unsigned char i_y)
 {
     int count = 0;
@@ -341,7 +360,10 @@ int Board::countClosedAround(unsigned char i_x, unsigned char i_y)
     }
     return count;
 }
-// Open all surrounding closed cells around the clicked cell
+
+/*
+ * Open all surrounding closed cells around the clicked cell
+ */ 
 void Board::openCellsAround(unsigned char i_x, unsigned char i_y)
 {
     for (int x_offset = -1; x_offset <= 1; x_offset++)
@@ -358,6 +380,9 @@ void Board::openCellsAround(unsigned char i_x, unsigned char i_y)
     }
 }
 
+/*
+ * Flag all surrounding cells around the clicked cell
+ */
 void Board::flagCellsAround(unsigned char i_x, unsigned char i_y)
 {
     for (int x_offset = -1; x_offset <= 1; x_offset++)
@@ -382,11 +407,17 @@ void Board::setMouseState(unsigned char i_mouse_state, unsigned char i_x, unsign
     cells[i_x][i_y].setMouseState(i_mouse_state);
 }
 
+/*
+ * Get the number of flagged cells
+ */
 int Board::getFlagCount()
 {
     return flag_count;
 }
 
+/*
+ * Get the number of mines
+ */
 int Board::getMineCount()
 {
     return mine_count;

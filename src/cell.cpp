@@ -1,7 +1,4 @@
-#include <vector>
-
 #include "cell.h"
-#include "common.h"
 
 Cell::Cell(unsigned char i_x, unsigned char i_y)
 {
@@ -29,6 +26,11 @@ bool Cell::isMine()
 {
     return mine;
 }
+
+/*
+ * Open the cell with the given flag and closed counts (from the board)
+ * Return the result of the opening operation
+ */
 
 int Cell::open(int flag_count, int closed_count)
 {
@@ -83,6 +85,10 @@ void Cell::setMineCount(int count)
     mine_count = count;
 }
 
+/*
+ * Increase the mine count of the cell by 1
+ * This is used when initializing the board and placing mines
+ */
 void Cell::increaseMineCount()
 {
     mine_count++;
@@ -103,6 +109,10 @@ unsigned char Cell::getEffectTimer()
     return effect_timer;
 }
 
+/*
+ * Update the effect timer of the cell by decrementing it
+ * Return true if the effect duration is over, false otherwise
+ */
 bool Cell::updateEffectTimer()
 {
     if (effect_timer > 0)

@@ -1,10 +1,3 @@
-#include <SFML/Graphics.hpp>
-#include <string>
-#include "mainmenu.h"
-#include "common.h"
-#include "gamesetting.h"
-#include "gamescreen.h"
-#include "gamebutton.h"
 #include "playinstruction.h"
 
 PlayInstruction::PlayInstruction(sf::Font &font)
@@ -21,7 +14,7 @@ PlayInstruction::PlayInstruction(sf::Font &font)
     // Set the instruction text properties
     instruction_text.setFillColor(COLOR_TEXT);
     instruction_text.setPosition({WINDOW_WIDTH / 2.f, WINDOW_HEIGHT / 2.f}); // Set the position of the instruction text
-    setInstructionText( "Left-click to uncover a cell. Right-click to place or remove \na flag on a suspected mine."
+    setInstructionText( "Left-click to uncover a cell. Right-click to place or remove \na flag on a suspected mine. "
                         "Numbered cells indicate how many \nmines are adjacent to it.\n\n"
                         "If a numbered cell has the correct number of surrounding flags,\n"
                         "left-click it to reveal all nearby unflagged cells.\n"

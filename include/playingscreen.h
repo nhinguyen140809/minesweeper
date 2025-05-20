@@ -6,7 +6,6 @@
 #include "gamescreen.h"
 #include "gamebutton.h"
 #include "board.h"
-#include "cell.h"
 
 class PlayingScreen : public IGameScreen
 {
@@ -20,7 +19,7 @@ private:
 
 public:
     PlayingScreen(sf::Font &font);
-    void reset();                                                                           // Constructor to initialize the playing screen
+    void reset();                                                                                            // Constructor to initialize the playing screen
     void render(sf::RenderWindow &window) override;                                                          // Render the playing screen
     void handleInput(const sf::Event &event, sf::RenderWindow &window, ScreenState &current_state) override; // Handle input events for the playing screen
     void update() override;                                                                                  // Update the playing screen state

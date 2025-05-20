@@ -2,7 +2,7 @@
 #define GAMEBUTTON_H
 #include <SFML/Graphics.hpp>
 #include "common.h"
-#include "gamesetting.h"
+#include "gamescreen.h"
 
 class GameButton : public sf::Drawable, public sf::Transformable
 {

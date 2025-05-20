@@ -1,7 +1,4 @@
 #include "gamebutton.h"
-#include "common.h"
-#include "gamescreen.h"
-#include <SFML/Graphics.hpp>
 
 GameButton::GameButton(float x, float y, float width, float height, const std::string &label, sf::Font &font)
     : text(font, label, FONT_HEIGHT),     // Initialize the text with the font, label, and character size

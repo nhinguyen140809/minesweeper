@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include "gamescreen.h"
 
 void IGameScreen::setCenterOrigin(sf::Text &text)

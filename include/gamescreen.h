@@ -1,7 +1,6 @@
 #ifndef GAMESCREEN_H
 #define GAMESCREEN_H
 #include <SFML/Graphics.hpp>
-#include "gamebutton.h"
 #include "common.h"
 
 enum class ScreenState

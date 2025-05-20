@@ -1,6 +1,8 @@
 #ifndef CELL_H
 #define CELL_H
 
+#include "common.h"
+
 enum OpenResult
 {
     MINE_TRIGGERED = -1, // Cell is a mine and is triggered

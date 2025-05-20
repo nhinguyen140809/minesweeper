@@ -1,5 +1,4 @@
 #include "gamesetting.h"
-#include "common.h"
 
 GameSetting::GameSetting()
 {
