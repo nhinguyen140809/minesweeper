@@ -19,7 +19,7 @@ SRC = $(wildcard src/*.cpp) main.cpp
 OBJ = $(patsubst %.cpp, obj/%.o, $(SRC))
 
 # Target binary
-TARGET = main.exe
+TARGET = minesweeper.exe
 
 # Default rule
 all: $(TARGET)
