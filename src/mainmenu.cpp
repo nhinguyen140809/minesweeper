@@ -23,6 +23,14 @@ MainMenu::MainMenu(sf::Font &font)
     mode_text.setFillColor(COLOR_TEXT);
     IGameScreen::setCenterOrigin(mode_text); // Center the mode text
     mode_text.setPosition({WINDOW_WIDTH / 2.f, -50 + WINDOW_HEIGHT / 2.f});
+
+    // Set the color to arrow buttons
+    left_arrow_button.setFillColor(COLOR_BACKGROUND);
+    right_arrow_button.setFillColor(COLOR_BACKGROUND);
+    left_arrow_button.setTextColor(COLOR_CLOSED_CELL);
+    right_arrow_button.setTextColor(COLOR_CLOSED_CELL);
+    left_arrow_button.setTextSize(50); // Set the character size of the text
+    right_arrow_button.setTextSize(50); // Set the character size of the text
 }
 
 void MainMenu::render(sf::RenderWindow &window)

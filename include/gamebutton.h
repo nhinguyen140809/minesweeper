@@ -7,8 +7,8 @@
 class GameButton : public sf::Drawable, public sf::Transformable
 {
 private:
-    sf::RectangleShape button;                                                   // Rectangle shape representing the button
-    sf::Text text;                                                               // Text displayed on the button
+    sf::RectangleShape button;                                                           // Rectangle shape representing the button
+    sf::Text text;                                                                       // Text displayed on the button
     virtual void draw(sf::RenderTarget &target, sf::RenderStates states) const override; // Draw the button on the window
 
 public:
@@ -19,6 +19,8 @@ public:
     void setFillColor(const sf::Color &color);
 
     void setText(const std::string &label); // Set the text of the button
+    void setTextColor(const sf::Color &color);
+    void setTextSize(unsigned int size); // Set the character size of the text
 };
 
 #endif // GAMEBUTTON_H
