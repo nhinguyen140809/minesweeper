@@ -7,9 +7,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 # Optional: enable static linking if you've built SFML that way
 option(SFML_STATIC_LIBRARIES "Link SFML statically" ON)
 
-# Modify this path based on your installation of SFML 3.0
-# This is only needed if SFML is not installed system-wide
-set(SFML_DIR "C:/Users/ASUS/SFML-install/lib/cmake/SFML")  
+
+if(WIN32)
+    set(SFML_DIR "C:/Users/ASUS/SFML-install/lib/cmake/SFML")
+elseif(APPLE)
+    # macOS: install SFML via Homebrew
+    set(SFML_DIR "/opt/homebrew/Cellar/sfml/3.0.0/lib/cmake/SFML")
+elseif(UNIX)
+    # Linux: install SFML via apt
+    set(SFML_DIR "/usr/lib/x86_64-linux-gnu/cmake/SFML")
+endif()
+
 
 # Gather source files
 file(GLOB_RECURSE SOURCES "src/*.cpp" "main.cpp")
