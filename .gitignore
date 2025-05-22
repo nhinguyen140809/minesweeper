@@ -4,3 +4,9 @@ obj/*.o
 
 # Settings files
 .vscode/*
+
+# Build files
+build/*
+
+# Make files
+Makefile
