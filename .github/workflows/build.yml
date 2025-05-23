@@ -37,18 +37,23 @@ jobs:
       - name: Clone SFML 3.0
         run: git clone --branch 3.0.x https://github.com/SFML/SFML.git
 
-      - name: Build SFML (static)
+      - name: Build and Install SFML (static)
         run: |
-          cmake -S SFML -B SFML/build -DSFML_BUILD_EXAMPLES=OFF -DSFML_USE_STATIC_STD_LIBS=ON -DSFML_STATIC_LIBRARIES=ON -DCMAKE_BUILD_TYPE=Release
-          cmake --build SFML/build --config Release
+          cmake -S SFML -B SFML/build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSFML_BUILD_EXAMPLES=OFF \
+            -DSFML_USE_STATIC_STD_LIBS=ON \
+            -DSFML_STATIC_LIBRARIES=ON \
+            -DCMAKE_INSTALL_PREFIX=SFML/install
+          cmake --build SFML/build --config Release --target install
 
       - name: Configure your game with CMake
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
             -DSFML_STATIC_LIBRARIES=ON \
-            -DSFML_DIR=${{ github.workspace }}/SFML/build
-
+            -DCMAKE_PREFIX_PATH=${{ github.workspace }}/SFML/install
+          
       - name: Build your game
         run: cmake --build build --config Release
 
