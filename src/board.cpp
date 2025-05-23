@@ -254,11 +254,11 @@ void Board::openCell(unsigned char i_x, unsigned char i_y)
     {
         first_click = true;
         // Place mines randomly
-        std::uniform_int_distribution<unsigned char> x_distribution(0, rows - 1);
-        std::uniform_int_distribution<unsigned char> y_distribution(0, columns - 1);
-        for (unsigned char i = 0; i < mine_count; i++)
+        std::uniform_int_distribution<int> x_distribution(0, rows - 1);
+        std::uniform_int_distribution<int> y_distribution(0, columns - 1);
+        for (int i = 0; i < mine_count; i++)
         {
-            unsigned char x, y;
+            int x, y;
             do
             {
                 x = x_distribution(random_generator);
