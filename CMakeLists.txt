@@ -26,17 +26,16 @@ file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
 # Exclude anything in the SFML directory
 list(FILTER SOURCES EXCLUDE REGEX ".*/SFML/.*")
 
+# Find SFML using modern CMake targets
+find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
+# Executable
+add_executable(Minesweeper ${SOURCES})
+
 # Include headers
 target_include_directories(Minesweeper PRIVATE
     ${CMAKE_SOURCE_DIR}/include
     ${CMAKE_SOURCE_DIR}/resource
 )
-
-# Find SFML using modern CMake targets
-find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
-
-# Executable
-add_executable(Minesweeper ${SOURCES})
 
 target_compile_definitions(Minesweeper PRIVATE SFML_STATIC)
 
