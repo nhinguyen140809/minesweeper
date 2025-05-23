@@ -1,0 +1,14 @@
+name: Test Upload Artifact
+
+on: [push]
+
+jobs:
+  test-upload:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: echo "Hello from test workflow!" > test.txt
+      - uses: actions/upload-artifact@v3.1.2
+        with:
+          name: test-artifact
+          path: test.txt
