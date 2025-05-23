@@ -6,7 +6,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable static linking
 option(SFML_STATIC_LIBRARIES "Link SFML statically" ON)
-target_compile_definitions(Minesweeper PRIVATE SFML_STATIC)
 
 
 if(NOT DEFINED SFML_DIR)
@@ -38,6 +37,8 @@ find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
 
 # Executable
 add_executable(Minesweeper ${SOURCES})
+
+target_compile_definitions(Minesweeper PRIVATE SFML_STATIC)
 
 # Link SFML statically
 target_link_libraries(Minesweeper
