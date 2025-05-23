@@ -6,7 +6,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Enable static linking
 option(SFML_STATIC_LIBRARIES "Link SFML statically" ON)
-add_definitions(-DSFML_STATIC)
+target_compile_definitions(Minesweeper PRIVATE SFML_STATIC)
+
 
 if(NOT DEFINED SFML_DIR)
     if(DEFINED ENV{GITHUB_ACTIONS})
@@ -21,10 +22,16 @@ if(NOT DEFINED SFML_DIR)
 endif()
 
 # Gather source files
-file(GLOB_RECURSE SOURCES "src/*.cpp" "main.cpp")
+file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+
+# Exclude anything in the SFML directory
+list(FILTER SOURCES EXCLUDE REGEX ".*/SFML/.*")
 
 # Include headers
-include_directories(include resource)
+target_include_directories(Minesweeper PRIVATE
+    ${CMAKE_SOURCE_DIR}/include
+    ${CMAKE_SOURCE_DIR}/resource
+)
 
 # Find SFML using modern CMake targets
 find_package(SFML 3 COMPONENTS Graphics Window System REQUIRED)
@@ -40,6 +47,6 @@ target_link_libraries(Minesweeper
 )
 
 # Windows-specific: link runtime statically
-if(WIN32)
+if(WIN32 AND CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     target_link_options(Minesweeper PRIVATE -static-libgcc -static-libstdc++)
 endif()
