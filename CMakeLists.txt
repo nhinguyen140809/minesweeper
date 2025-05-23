@@ -22,6 +22,7 @@ endif()
 
 # Gather source files
 file(GLOB_RECURSE SOURCES CONFIGURE_DEPENDS "src/*.cpp")
+list(APPEND SOURCES main.cpp)
 
 # Exclude anything in the SFML directory
 list(FILTER SOURCES EXCLUDE REGEX ".*/SFML/.*")
