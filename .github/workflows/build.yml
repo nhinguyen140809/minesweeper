@@ -38,6 +38,7 @@ jobs:
         run: git clone --branch 3.0.x https://github.com/SFML/SFML.git
 
       - name: Build and Install SFML (static)
+        shell: bash
         run: |
           cmake -S SFML -B SFML/build \
             -DCMAKE_BUILD_TYPE=Release \
@@ -48,6 +49,7 @@ jobs:
           cmake --build SFML/build --config Release --target install
 
       - name: Configure your game with CMake
+        shell: bash
         run: |
           cmake -S . -B build \
             -DCMAKE_BUILD_TYPE=Release \
