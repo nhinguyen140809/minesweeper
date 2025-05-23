@@ -15,6 +15,7 @@ A simple implementation of the classic **Minesweeper** game using **SFML 3.0**, 
 This project includes a GitHub Actions workflow to automatically build the game on:
 - Ubuntu
 - macOS
+
 Download from [GitHub Actions → Latest run → Artifacts] (https://github.com/nhinguyen140809/minesweeper/actions)
 
 Windows is excluded due to static linking limitations in GitHub-hosted runners.
