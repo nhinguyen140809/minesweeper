@@ -20,15 +20,19 @@ jobs:
 
       - name: Install Dependencies (Linux only)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y cmake g++ libx11-dev libxrandr-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev
+        run: |
+            sudo apt-get update
+            sudo apt-get install -y cmake g++ \
+              libx11-dev libxrandr-dev libxcursor-dev libxi-dev \
+              libudev-dev libopenal-dev libvorbis-dev libflac-dev
 
       - name: Install Dependencies (macOS only)
         if: runner.os == 'macOS'
         run: brew install cmake
 
-      - name: Install Dependencies (Windows only)
+      - name: Check CMake version (Windows only)
         if: runner.os == 'Windows'
-        run: choco install cmake -y
+        run: cmake --version
 
       - name: Clone SFML 3.0
         run: git clone --branch 3.0.x https://github.com/SFML/SFML.git
