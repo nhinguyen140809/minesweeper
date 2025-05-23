@@ -20,11 +20,9 @@ jobs:
 
       - name: Install Dependencies (Linux only)
         if: runner.os == 'Linux'
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y cmake g++ \
-              libx11-dev libxrandr-dev libxcursor-dev libxi-dev \
-              libudev-dev libopenal-dev libvorbis-dev libflac-dev
+        run: sudo apt-get update && sudo apt-get install -y \
+                libx11-dev libxext-dev libxrandr-dev libxcursor-dev libxi-dev \
+                libgl1-mesa-dev libudev-dev libfreetype6-dev libopenal-dev libflac-dev libvorbis-dev
 
       - name: Install Dependencies (macOS only)
         if: runner.os == 'macOS'
