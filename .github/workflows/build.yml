@@ -1,0 +1,56 @@
+name: Build SFML 3.0 Game (Static Link) on All Platforms
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout your game
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies (Linux only)
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y cmake g++ libx11-dev libxrandr-dev libudev-dev libopenal-dev libvorbis-dev libflac-dev
+
+      - name: Install Dependencies (macOS only)
+        if: runner.os == 'macOS'
+        run: brew install cmake
+
+      - name: Install Dependencies (Windows only)
+        if: runner.os == 'Windows'
+        run: choco install cmake -y
+
+      - name: Clone SFML 3.0
+        run: git clone --branch 3.0.x https://github.com/SFML/SFML.git
+
+      - name: Build SFML (static)
+        run: |
+          cmake -S SFML -B SFML/build -DSFML_BUILD_EXAMPLES=OFF -DSFML_USE_STATIC_STD_LIBS=ON -DSFML_STATIC_LIBRARIES=ON -DCMAKE_BUILD_TYPE=Release
+          cmake --build SFML/build --config Release
+
+      - name: Configure your game with CMake
+        run: |
+          cmake -S . -B build \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DSFML_STATIC_LIBRARIES=ON \
+            -DSFML_DIR=${{ github.workspace }}/SFML/build
+
+      - name: Build your game
+        run: cmake --build build --config Release
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v3
+        with:
+            name: Minesweeper-${{ matrix.os }}
+            path: build/Minesweeper*
+
